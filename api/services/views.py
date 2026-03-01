@@ -30,3 +30,32 @@ class BlogViewSet(viewsets.ModelViewSet):
 class TemoignageViewSet(viewsets.ModelViewSet):
     queryset = Temoignage.objects.all()
     serializer_class = TemoignageSerializer
+    
+    
+
+class ContactViewSet(viewsets.ModelViewSet):
+    queryset = Contact.objects.all().order_by('-created_at')
+    serializer_class = ContactSerializer
+    http_method_names = ['get', 'post', 'head', 'options']
+    
+    
+    
+
+class CategorieProjetViewSet(viewsets.ModelViewSet):
+    queryset = CategorieProjet.objects.all()
+    serializer_class = CategorieProjetSerializer
+
+class ProjetViewSet(viewsets.ModelViewSet):
+    queryset = Projet.objects.all()
+    serializer_class = ProjetSerializer
+    
+    
+    
+
+class CategorieProjetViewSet(viewsets.ModelViewSet):
+    queryset = CategorieProjet.objects.all()
+    serializer_class = CategorieProjetSerializer
+
+class ProjetViewSet(viewsets.ModelViewSet):
+    queryset = Projet.objects.all()
+    serializer_class = ProjetSerializer
