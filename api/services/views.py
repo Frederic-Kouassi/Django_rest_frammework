@@ -2,11 +2,14 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Contact
+from django.template.loader import render_to_string
 
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
+from django.conf import settings 
+from django.utils import timezone
+from django.core.mail import EmailMessage 
 
 # Create your views here.
 
@@ -44,17 +47,39 @@ class ContactView(APIView):
         serializer = ContactSerializer(contacts, many=True)
         return Response(serializer.data)
 
-    # POST créer un contact
+        # POST créer un contact
     def post(self, request):
-        serializer = ContactSerializer(data=request.data)
+            serializer = ContactSerializer(data=request.data)
+            if serializer.is_valid():
+                contact = serializer.save()
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                # Préparer le contexte pour le template
+                context = {
+                    'nom': contact.nom,
+                    'email': contact.email,
+                    'message': contact.message,
+                    'date': timezone.localtime(contact.created_at).strftime("%d/%m/%Y %H:%M"),
+                    'admin_url': f"http://127.0.0.1:8000/admin/api/contact/{contact.id}/change/"
+                }
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+                # Générer le HTML depuis le template
+                message_html = render_to_string('emails/contact_email.html', context)
+
+                # Envoyer l'email
+                email = EmailMessage(
+                    subject=f"Nouveau message de {contact.nom}",
+                    body=message_html,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[settings.ADMIN_EMAIL],
+                )
+                email.content_subtype = "html"
+                email.send(fail_silently=False)
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 class ContactDetailView(APIView):
 
     def get_object(self, pk):
