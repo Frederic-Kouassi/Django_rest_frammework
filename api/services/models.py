@@ -89,8 +89,15 @@ class Profil(models.Model):
     nom         = models.CharField(max_length=100)
     prenom      = models.CharField(max_length=100)
     photo       = models.ImageField(upload_to='profil/')
-    titre       = models.CharField(max_length=200)  # ex: "Développeur Full Stack"
-    description = models.TextField()  # bio / à propos
+    titre       = models.CharField(max_length=200)  # ex: "Software Engineer / DevOps Engineer"
+    tagline     = models.CharField(max_length=500, blank=True) # Hero section summary
+    bio         = models.TextField()  # bio / à propos
+    introduction = models.TextField(blank=True) # The "I am a Software Engineer..." full intro
+    
+    # Education & Skills
+    education_summary = models.TextField(blank=True) # ex: B.Tech in Computer Science
+    projects_summary  = models.TextField(blank=True) # ex: Built more than 5 full-stack projects
+    languages_tools   = models.TextField(blank=True) # List of languages and tools
     
     # Coordonnées
     email       = models.EmailField()
@@ -102,15 +109,17 @@ class Profil(models.Model):
     # Réseaux sociaux
     github      = models.URLField(blank=True)
     linkedin    = models.URLField(blank=True)
-    twitter     = models.URLField(blank=True)
+    twitter_x   = models.URLField(blank=True)
     instagram   = models.URLField(blank=True)
+    facebook    = models.URLField(blank=True)
+    youtube     = models.URLField(blank=True)
     website     = models.URLField(blank=True)
     
     # CV
     cv          = models.FileField(upload_to='cv/', blank=True)
     
     # Infos pro
-    disponible  = models.BooleanField(default=True)  # disponible pour missions
+    disponible  = models.BooleanField(default=True)
     années_experience = models.IntegerField(default=0)
     
     def __str__(self):
