@@ -7,6 +7,9 @@ from .views.contact import ContactCreateView
 from .views.project import ProjectListView, ProjectCategoryListView
 from .views.profile import ProfileDetailView
 from .views.testimonial import TestimonialListView
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('experience/', ExperienceListView.as_view(), name='experience-list'),
@@ -19,3 +22,10 @@ urlpatterns = [
     path('profil/', ProfileDetailView.as_view(), name='profile-detail'),
     path('testimonial/', TestimonialListView.as_view(), name='testimonial-list'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+urlpatterns += staticfiles_urlpatterns()
+
+
